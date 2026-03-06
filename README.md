@@ -52,18 +52,19 @@ Assets/
 
 ## Fastest Play Test
 If you want the project to be playable from an empty scene with almost no manual setup:
-1. Create a blank scene.
-2. Create one empty GameObject named `Bootstrap`.
-3. Attach `SkyRunnerBootstrap`.
-4. Press Play.
+1. Open the project in Unity 2022 LTS.
+2. Open any blank scene.
+3. Press Play.
 
-The bootstrap script creates:
+The auto bootstrap creates:
 - a simple player plane
 - a chase camera
 - a sample checkpoint course
 - race timer and respawn systems
 - a minimal HUD
 - ground and a few obstacles
+
+If you want manual control instead, place `SkyRunnerBootstrap` in the scene yourself.
 
 ## Input (Default MVP)
 - W / S: throttle up / down
