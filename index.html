@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sky Runner</title>
+  </head>
+  <body>
+    <div id="app">
+      <div id="hud" class="hud-shell">
+        <div class="hud-top">
+          <div class="panel cluster-left">
+            <div class="readout">
+              <span class="label">Speed</span>
+              <span id="speed-value" class="value">SPD 0</span>
+            </div>
+            <div class="readout">
+              <span class="label">Altitude</span>
+              <span id="altitude-value" class="value">ALT 0</span>
+            </div>
+          </div>
+          <div class="panel cluster-right">
+            <div class="readout">
+              <span class="label">Time</span>
+              <span id="timer-value" class="value">00:00.00</span>
+            </div>
+            <div class="readout">
+              <span class="label">Checkpoint</span>
+              <span id="checkpoint-value" class="value">CP 0/0</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="message-banner" class="message-banner hidden"></div>
+
+        <div class="hud-bottom">
+          <div class="panel meter-panel">
+            <div class="meter-header">
+              <span>Boost</span>
+              <span id="boost-percent">100%</span>
+            </div>
+            <div class="meter-track">
+              <div id="boost-fill" class="meter-fill boost-fill"></div>
+            </div>
+          </div>
+
+          <div class="panel meter-panel">
+            <div class="meter-header">
+              <span>Health</span>
+              <span id="health-percent">100%</span>
+            </div>
+            <div class="meter-track">
+              <div id="health-fill" class="meter-fill health-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls-card">
+          <div class="controls-title">Flight Controls</div>
+          <div class="controls-line">W / S: Throttle</div>
+          <div class="controls-line">A / D: Yaw</div>
+          <div class="controls-line">Arrows: Pitch</div>
+          <div class="controls-line">Q / E: Roll</div>
+          <div class="controls-line">Shift: Boost</div>
+          <div class="controls-line">R: Respawn</div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
