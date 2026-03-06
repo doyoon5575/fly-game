@@ -1,17 +1,25 @@
 export class RaceTimer {
-  constructor(checkpointManager) {
+  constructor(checkpointManager, options = {}) {
+    this.options = {
+      autoStartOnCheckpoint: true,
+      stopOnCourseFinish: true,
+      ...options
+    };
+
     this.elapsedTime = 0;
     this.hasStarted = false;
     this.isRunning = false;
 
     checkpointManager.onCheckpointPassed((nextCheckpointIndex) => {
-      if (!this.hasStarted && nextCheckpointIndex > 0) {
+      if (this.options.autoStartOnCheckpoint && !this.hasStarted && nextCheckpointIndex > 0) {
         this.start();
       }
     });
 
     checkpointManager.onCourseFinished(() => {
-      this.stop();
+      if (this.options.stopOnCourseFinish) {
+        this.stop();
+      }
     });
   }
 

@@ -44,7 +44,7 @@ export class ChaseCamera {
   }
 
   orientCamera(dt) {
-    TMP_FORWARD.copy(LOCAL_FORWARD).applyQuaternion(this.plane.quaternion).normalize();
+    TMP_FORWARD.copy(this.plane.velocity.lengthSq() > 4 ? this.plane.velocity : this.plane.forward).normalize();
     TMP_LOOK_TARGET.copy(this.plane.position).addScaledVector(TMP_FORWARD, this.forwardLookDistance);
 
     LOOK_MATRIX.lookAt(this.camera.position, TMP_LOOK_TARGET, WORLD_UP);

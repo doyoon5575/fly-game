@@ -25,8 +25,12 @@
               <span id="timer-value" class="value">00:00.00</span>
             </div>
             <div class="readout">
-              <span class="label">Checkpoint</span>
-              <span id="checkpoint-value" class="value">CP 0/0</span>
+              <span class="label">Targets</span>
+              <span id="score-value" class="value">KILLS 0</span>
+            </div>
+            <div class="readout">
+              <span class="label">Record</span>
+              <span id="record-value" class="value">MAX 0</span>
             </div>
           </div>
         </div>
@@ -53,6 +57,21 @@
               <div id="health-fill" class="meter-fill health-fill"></div>
             </div>
           </div>
+
+          <div class="panel meter-panel">
+            <div class="meter-header">
+              <span>Weapons</span>
+              <span id="weapon-percent">0%</span>
+            </div>
+            <div class="meter-track">
+              <div id="weapon-fill" class="meter-fill weapon-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="crosshair">
+          <div class="crosshair-h"></div>
+          <div class="crosshair-v"></div>
         </div>
 
         <div class="controls-card">
@@ -62,6 +81,7 @@
           <div class="controls-line">Arrows: Pitch</div>
           <div class="controls-line">Q / E: Roll</div>
           <div class="controls-line">Shift: Boost</div>
+          <div class="controls-line">Space / Click: Fire</div>
           <div class="controls-line">R: Respawn</div>
         </div>
       </div>

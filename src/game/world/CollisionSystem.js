@@ -6,9 +6,14 @@ const TMP_NORMAL = new Vector3();
 export class CollisionSystem {
   constructor(obstacles, groundHeight = 0) {
     this.obstacles = obstacles;
+    this.dynamicObstacles = [];
     this.groundHeight = groundHeight;
     this.hitCooldown = 0;
     this.hitCooldownDuration = 0.45;
+  }
+
+  setDynamicObstacles(obstacles) {
+    this.dynamicObstacles = obstacles;
   }
 
   update(dt, plane) {
@@ -23,7 +28,15 @@ export class CollisionSystem {
       return;
     }
 
-    for (const obstacle of this.obstacles) {
+    for (const obstacle of [...this.obstacles, ...this.dynamicObstacles]) {
+      if (obstacle.shape === "sphere") {
+        if (this.testSphereCollision(plane, obstacle)) {
+          return;
+        }
+
+        continue;
+      }
+
       const top = obstacle.position.y + obstacle.halfHeight;
       const bottom = obstacle.position.y - obstacle.halfHeight;
 
@@ -53,5 +66,25 @@ export class CollisionSystem {
       this.hitCooldown = this.hitCooldownDuration;
       return;
     }
+  }
+
+  testSphereCollision(plane, obstacle) {
+    TMP_OFFSET.copy(plane.position).sub(obstacle.position);
+    const totalRadius = plane.collisionRadius + obstacle.radius;
+
+    if (TMP_OFFSET.lengthSq() > totalRadius * totalRadius) {
+      return false;
+    }
+
+    TMP_NORMAL.copy(TMP_OFFSET);
+    if (TMP_NORMAL.lengthSq() < 0.0001) {
+      TMP_NORMAL.set(0, 1, 0);
+    } else {
+      TMP_NORMAL.normalize();
+    }
+
+    plane.applyCollisionPenalty(plane.config.collisionDamage * 0.8, TMP_NORMAL);
+    this.hitCooldown = this.hitCooldownDuration;
+    return true;
   }
 }

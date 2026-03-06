@@ -102,7 +102,7 @@ canvas {
 }
 
 .meter-panel {
-  width: min(320px, calc(50vw - 32px));
+  width: min(280px, calc(33vw - 28px));
   padding: 14px 16px 16px;
 }
 
@@ -136,6 +136,10 @@ canvas {
 
 .health-fill {
   background: linear-gradient(90deg, #39d86f 0%, #9cff77 100%);
+}
+
+.weapon-fill {
+  background: linear-gradient(90deg, #ffb24d 0%, #ff6f3c 100%);
 }
 
 .message-banner {
@@ -187,6 +191,37 @@ canvas {
   color: var(--text-dim);
 }
 
+.crosshair {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 42px;
+  height: 42px;
+  transform: translate(-50%, -50%);
+  opacity: 0.82;
+}
+
+.crosshair-h,
+.crosshair-v {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 18px rgba(43, 217, 254, 0.6);
+}
+
+.crosshair-h {
+  width: 42px;
+  height: 2px;
+  transform: translate(-50%, -50%);
+}
+
+.crosshair-v {
+  width: 2px;
+  height: 42px;
+  transform: translate(-50%, -50%);
+}
+
 @media (max-width: 840px) {
   .hud-top,
   .hud-bottom {
@@ -208,7 +243,7 @@ canvas {
   .controls-card {
     left: 22px;
     right: auto;
-    bottom: 190px;
+    bottom: 226px;
     width: min(300px, calc(100vw - 44px));
   }
 }

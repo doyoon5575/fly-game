@@ -1,4 +1,5 @@
 import { Color, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import { WeaponSystem } from "./combat/WeaponSystem.js";
 import { ChaseCamera } from "./camera/ChaseCamera.js";
 import { courseConfig } from "./config/courseConfig.js";
 import { planeConfig } from "./config/planeConfig.js";
@@ -10,6 +11,7 @@ import { PlaneController } from "./player/PlaneController.js";
 import { HUD } from "./ui/HUD.js";
 import { CollisionSystem } from "./world/CollisionSystem.js";
 import { CourseFactory } from "./world/CourseFactory.js";
+import { TargetManager } from "./world/TargetManager.js";
 
 export class Game {
   constructor(rootElement) {
@@ -17,7 +19,7 @@ export class Game {
     this.scene = new Scene();
     this.scene.background = new Color("#8bcdf8");
 
-    this.camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2500);
+    this.camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 4000);
     this.renderer = new WebGLRenderer({ antialias: true });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -42,7 +44,16 @@ export class Game {
     this.plane.setSpawn(world.spawnPosition, world.spawnRotation);
 
     this.checkpointManager = new CheckpointManager(world.checkpoints);
-    this.raceTimer = new RaceTimer(this.checkpointManager);
+    this.raceTimer = new RaceTimer(this.checkpointManager, {
+      autoStartOnCheckpoint: false,
+      stopOnCourseFinish: false
+    });
+    this.raceTimer.start();
+
+    this.targetManager = new TargetManager(this.scene);
+    this.targetManager.reset(this.plane.position, this.plane.forward);
+
+    this.weaponSystem = new WeaponSystem(this.scene, this.plane, this.targetManager);
     this.collisionSystem = new CollisionSystem(world.obstacles, 0);
     this.chaseCamera = new ChaseCamera(this.camera, this.plane);
     this.respawnSystem = new RespawnSystem(
@@ -50,24 +61,21 @@ export class Game {
       this.checkpointManager,
       this.raceTimer,
       () => {
+        this.targetManager.reset(this.plane.position, this.plane.forward);
+        this.weaponSystem.reset();
+        this.raceTimer.start();
         this.chaseCamera.snap();
-        this.hud.showMessage("Respawned. Fly through checkpoint one to restart.");
+        this.hud.showMessage("Run reset. Climb, fire, and keep rising.");
       }
     );
 
-    this.checkpointManager.onCheckpointPassed((nextCheckpointIndex, totalCheckpoints) => {
-      if (nextCheckpointIndex < totalCheckpoints) {
-        this.hud.showMessage(`Checkpoint ${nextCheckpointIndex}/${totalCheckpoints}`);
-      }
-    });
-
     this.checkpointManager.onCourseFinished(() => {
-      this.hud.showMessage(`Course clear in ${this.raceTimer.getFormattedTime()} - press R to retry`);
+      this.hud.showMessage("Training route clear. The sky above keeps going.");
     });
 
     this.chaseCamera.snap();
-    this.hud.update(this.plane, this.checkpointManager, this.raceTimer);
-    this.hud.showMessage("Fly the course. Pass checkpoints in order.");
+    this.hud.update(this.plane, this.raceTimer, this.weaponSystem, this.targetManager);
+    this.hud.showMessage("Mindless mode: climb, shoot targets, avoid collisions.");
 
     window.addEventListener("resize", this.handleResize);
     this.animationFrameId = window.requestAnimationFrame(this.tick);
@@ -79,10 +87,13 @@ export class Game {
 
     const inputState = this.input.getState();
     this.plane.update(dt, inputState);
+    this.targetManager.update(dt, this.plane);
+    this.weaponSystem.update(dt, inputState);
+    this.collisionSystem.setDynamicObstacles(this.targetManager.getCollisionBodies());
     this.collisionSystem.update(dt, this.plane);
 
     if (this.respawnSystem.update(inputState)) {
-      this.hud.update(this.plane, this.checkpointManager, this.raceTimer);
+      this.hud.update(this.plane, this.raceTimer, this.weaponSystem, this.targetManager);
       this.renderFrame();
       this.animationFrameId = window.requestAnimationFrame(this.tick);
       return;
@@ -91,7 +102,7 @@ export class Game {
     this.checkpointManager.update(this.plane.position, this.plane.collisionRadius);
     this.raceTimer.update(dt);
     this.chaseCamera.update(dt);
-    this.hud.update(this.plane, this.checkpointManager, this.raceTimer);
+    this.hud.update(this.plane, this.raceTimer, this.weaponSystem, this.targetManager);
 
     this.renderFrame();
     this.animationFrameId = window.requestAnimationFrame(this.tick);

@@ -6,12 +6,12 @@ The Unity scripts remain in `Assets/_Project/Scripts` as gameplay reference duri
 The playable web version lives in `src/` and runs with Vite.
 
 ## Web MVP Goals
-- Third-person arcade flight
-- Boost, health, and respawn
-- Ordered checkpoints
-- Race timer
+- Stable arcade flight with physically-inspired control response
+- Visible pilot and aircraft state feedback
+- Boost, health, shooting, and respawn
+- Destructible aerial targets
+- Endless upward sky lanes to keep climbing
 - Browser HUD
-- Simple terrain and obstacle collisions
 
 ## Run The Web Version
 1. Install dependencies:
@@ -30,6 +30,7 @@ The playable web version lives in `src/` and runs with Vite.
 - `Arrow Up / Arrow Down`: pitch
 - `Q / E`: roll
 - `Left Shift`: boost
+- `Space / Left Click`: fire
 - `R`: respawn / restart
 
 ## Architecture Mapping

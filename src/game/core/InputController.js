@@ -2,17 +2,26 @@ export class InputController {
   constructor() {
     this.keysDown = new Set();
     this.justPressed = new Set();
+    this.mouseDown = false;
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.handleMouseUp = this.handleMouseUp.bind(this);
 
     window.addEventListener("keydown", this.handleKeyDown);
     window.addEventListener("keyup", this.handleKeyUp);
     window.addEventListener("blur", this.handleBlur);
+    window.addEventListener("mousedown", this.handleMouseDown);
+    window.addEventListener("mouseup", this.handleMouseUp);
   }
 
   handleKeyDown(event) {
+    if (["Space", "ArrowUp", "ArrowDown"].includes(event.code)) {
+      event.preventDefault();
+    }
+
     if (!this.keysDown.has(event.code)) {
       this.justPressed.add(event.code);
     }
@@ -27,6 +36,19 @@ export class InputController {
   handleBlur() {
     this.keysDown.clear();
     this.justPressed.clear();
+    this.mouseDown = false;
+  }
+
+  handleMouseDown(event) {
+    if (event.button === 0) {
+      this.mouseDown = true;
+    }
+  }
+
+  handleMouseUp(event) {
+    if (event.button === 0) {
+      this.mouseDown = false;
+    }
   }
 
   isDown(code) {
@@ -46,6 +68,7 @@ export class InputController {
       pitch: Number(this.isDown("ArrowUp")) - Number(this.isDown("ArrowDown")),
       roll: Number(this.isDown("KeyQ")) - Number(this.isDown("KeyE")),
       boost: this.isDown("ShiftLeft") || this.isDown("ShiftRight"),
+      fire: this.isDown("Space") || this.mouseDown,
       respawnPressed: this.consumePress("KeyR")
     };
   }
@@ -54,5 +77,7 @@ export class InputController {
     window.removeEventListener("keydown", this.handleKeyDown);
     window.removeEventListener("keyup", this.handleKeyUp);
     window.removeEventListener("blur", this.handleBlur);
+    window.removeEventListener("mousedown", this.handleMouseDown);
+    window.removeEventListener("mouseup", this.handleMouseUp);
   }
 }
